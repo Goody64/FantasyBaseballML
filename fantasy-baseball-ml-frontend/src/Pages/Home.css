@@ -1,0 +1,18 @@
+.home-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .search-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  input[type="text"] {
+    width: 300px;
+    padding: 10px;
+    font-size: 16px;
+  }
+  
