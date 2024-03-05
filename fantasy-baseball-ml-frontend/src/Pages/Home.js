@@ -1,70 +1,54 @@
 import React, { useState } from 'react';
 import './Home.css';
+import { fetchPlayerStats } from './searchService';
+import { processStats } from './statsProcessor';
 
 function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [playerStats, setPlayerStats] = useState(null);
+  const [statType, setStatType] = useState(''); // Add state for statistic type if needed
 
   const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
+      setSearchTerm(event.target.value);
   };
 
   const handleSearch = async (event) => {
-    event.preventDefault(); // Prevent page reload on form submission
-    try {
-      const response = await fetch(`http://localhost:8000/api/player_stats?player_name=${searchTerm}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      event.preventDefault(); // Prevent page reload on form submission
+      try {
+          // Use the imported fetchPlayerStats function
+          const data = await fetchPlayerStats(searchTerm, statType); // Pass the statType if necessary
+          setPlayerStats(data);
+      } catch (error) {
+          console.log(error);
       }
-      const data = await response.json();
-      setPlayerStats(data);
-    } catch (error) {
-      console.log(error);
-    }
   };
-    function pitchTypeExpanded(pitchType) {
-      switch(pitchType) {
-        case 'AB': return 'Automatic Ball';
-        case 'AS': return 'Automatic Strike';
-        case 'CH': return 'Change-up';
-        case 'CU': return 'Curveball';
-        case 'EP': return 'Eephus';
-        case 'FC': return 'Cutter';
-        case 'FF': return 'Four-Seam Fastball';
-        case 'FO': return 'Forkball';
-        case 'FS': return 'Splitter';
-        case 'FT':
-        case 'SI': return 'Two-Seam Fastball / Sinker';
-        case 'GY': return 'Gyroball';
-        case 'IN': return 'Intentional Ball';
-        case 'KC': return 'Knuckle Curve';
-        case 'KN': return 'Knuckleball';
-        case 'NP': return 'No Pitch';
-        case 'PO': return 'Pitchout';
-        case 'SC': return 'Screwball';
-        case 'SL': return 'Slider';
-        case 'UN': return 'Unknown';
-        default: return 'Unknown Pitch Type';
-      }
-    }
   
   return (
     <div className="home-container">
-      <h1>Fantasy Baseball Player Predictor</h1>
-      <form className="search-container" onSubmit={handleSearch}>
+    <h1>Fantasy Baseball Player Predictor</h1>
+    <form className="search-container" onSubmit={handleSearch}>
         <input
-          type="text"
-          placeholder="Look up a current MLB player"
-          value={searchTerm}
-          onChange={handleSearchChange}
+            type="text"
+            placeholder="Look up a current MLB player"
+            value={searchTerm}
+            onChange={handleSearchChange}
         />
         <button type="submit">Search</button>
-      </form>
-      {playerStats && (
+        <select value={statType} onChange={(e) => setStatType(e.target.value)}>
+            <option value="">Select Statistic Type</option>
+            <option value="pitchType">Pitch Type</option>
+            <option value="battingAverage">Batting Average</option>
+        </select>
+    </form>
+      {1 && (
         <div>
-          {Object.entries(playerStats).map(([pitchType, speed]) => (
-            <div key={pitchType}>{`${pitchTypeExpanded(pitchType)}: ${speed.toFixed(2)}`}</div>
-          ))}
+          {playerStats && (
+            <div>
+              {processStats(playerStats, statType).map((item, index) => (
+                <div key={index}>{item.display}</div> // Use 'key' if you need a unique identifier
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
