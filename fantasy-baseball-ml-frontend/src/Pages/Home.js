@@ -7,7 +7,7 @@ function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [playerStats, setPlayerStats] = useState(null);
   const [statType, setStatType] = useState(''); // Add state for statistic type if needed
-
+  const [searchFeedback, setSearchFeedback] = useState(null);
   const handleSearchChange = (event) => {
       setSearchTerm(event.target.value);
   };
@@ -18,8 +18,10 @@ function Home() {
           // Use the imported fetchPlayerStats function
           const data = await fetchPlayerStats(searchTerm, statType); // Pass the statType if necessary
           setPlayerStats(data);
+          setSearchFeedback(false); 
       } catch (error) {
           console.log(error);
+          setSearchFeedback(true);
       }
   };
   
@@ -40,7 +42,8 @@ function Home() {
             <option value="battingAverage">Batting Average</option>
         </select>
     </form>
-      {1 && (
+    {searchFeedback && <div className="search-feedback">Cannot find player</div>}
+      {!searchFeedback && (
         <div>
           {playerStats && (
             <div>

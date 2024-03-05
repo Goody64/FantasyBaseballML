@@ -9,8 +9,9 @@ export function processStats(data, statType) {
         case 'pitchType':
             return processPitchTypeStats(data);
         default:
-            return data;
+            return [];
 }
+
 
 // Specific function for processing pitchType stats
 function processPitchTypeStats(data) {
