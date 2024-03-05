@@ -10,6 +10,6 @@ def calculate_hitting_stats(first_name, last_name, stat_type):
     player_stats = statcast_batter('2023-03-30', f'{last}-12-31', player_id)
 
     player_stats_cleaned = player_stats.where(pd.notnull(player_stats), None)
-    mean_speeds = player_stats_cleaned
+    mean_speeds = player_stats_cleaned.groupby(stat_type)
     # Convert to dictionary
     return mean_speeds.to_dict()
