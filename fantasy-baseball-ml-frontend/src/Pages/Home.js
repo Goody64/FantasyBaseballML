@@ -6,7 +6,7 @@ import { processStats } from './statsProcessor';
 function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [playerStats, setPlayerStats] = useState(null);
-  const [statType, setStatType] = useState(''); // Add state for statistic type if needed
+  const [statType, setStatType] = useState('');
   const [searchFeedback, setSearchFeedback] = useState(null);
   const handleSearchChange = (event) => {
       setSearchTerm(event.target.value);
@@ -15,8 +15,7 @@ function Home() {
   const handleSearch = async (event) => {
       event.preventDefault(); // Prevent page reload on form submission
       try {
-          // Use the imported fetchPlayerStats function
-          const data = await fetchPlayerStats(searchTerm, statType); // Pass the statType if necessary
+          const data = await fetchPlayerStats(searchTerm, statType);
           setPlayerStats(data);
           setSearchFeedback(false); 
       } catch (error) {
@@ -24,7 +23,7 @@ function Home() {
           setSearchFeedback(true);
       }
   };
-  
+
   return (
     <div className="home-container">
     <h1>Fantasy Baseball Player Predictor</h1>
@@ -37,10 +36,12 @@ function Home() {
         />
         <button type="submit">Search</button>
         <select value={statType} onChange={(e) => setStatType(e.target.value)}>
-            <option value="">Select Statistic Type</option>
-            <option value="pitchType">Pitch Type</option>
-            <option value="battingAverage">Batting Average</option>
+          <option value="">Select Statistic Type</option>
+          <option value="pitching:pitch_type">Average Speed by Pitch</option>
+          <option value="pitching:spin_rate">Spin Rate</option>
+          <option value="batting:average">Batting Average</option>
         </select>
+
     </form>
     {searchFeedback && <div className="search-feedback">Cannot find player</div>}
       {!searchFeedback && (
@@ -48,7 +49,7 @@ function Home() {
           {playerStats && (
             <div>
               {processStats(playerStats, statType).map((item, index) => (
-                <div key={index}>{item.display}</div> // Use 'key' if you need a unique identifier
+                <div key={index}>{item.display}</div> 
               ))}
             </div>
           )}

@@ -4,9 +4,9 @@ export function processStats(data, statType) {
     if (data === null || data === undefined) {
         return []; // Return an empty array or any other default value as appropriate
       }
-
-    switch (statType) {
-        case 'pitchType':
+    const [_, stattype] = statType.split(':')
+    switch (stattype) {
+        case 'pitch_type':
             return processPitchTypeStats(data);
         default:
             return [];
@@ -15,12 +15,13 @@ export function processStats(data, statType) {
 
 // Specific function for processing pitchType stats
 function processPitchTypeStats(data) {
-    // Check if data is null or undefined before proceeding
     if (!data) {
-      return []; // Return an empty array to handle null/undefined data safely
+      return ({
+        key: 'hello',
+        display: 'this is wrong',
+      });
     }
-  
-    // Assuming data is an object with pitchTypes as keys
+
     const processedData = Object.entries(data).map(([pitchType, speed]) => {
       return {
         key: pitchType,
@@ -31,7 +32,6 @@ function processPitchTypeStats(data) {
     return processedData;
   }
 
-// Function to expand pitch type codes into full names (assuming this exists from your initial question)
 function pitchTypeExpanded(pitchType) {
     switch(pitchType) {
       case 'AB': return 'Automatic Ball';
